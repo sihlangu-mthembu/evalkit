@@ -1,0 +1,18 @@
+question_id,model,source_type,label,points,flags,human_label
+q01,"Claude Opus 5 (claude.ai chat, web search on)",observed,correct,1.0,mentions_distractor:1879|13 June 1876,correct
+q01,Gemini app (Flash-Lite),observed,distractor,0.0,mentions_distractor:1967|1879,distractor
+q02,Google Search AI Overview,observed,no_answer,0.0,mentions_distractor:639;abstained,no_answer
+q02,"Claude Opus 5 (claude.ai chat, web search on)",observed,no_answer,0.0,mentions_distractor:639;abstained,no_answer
+q03,"Claude Opus 5 (claude.ai chat, web search on)",observed,correct,1.0,mentions_distractor:2 May 1906|5 May 1906,correct
+q01,demo-model (synthetic),synthetic,partial,0.5,,
+q02,demo-model (synthetic),synthetic,correct,1.0,,
+q03,demo-model (synthetic),synthetic,distractor,0.0,mentions_distractor:2 May 1906,
+q04,demo-model (synthetic),synthetic,correct,1.0,,
+q05,demo-model (synthetic),synthetic,wrong,0.0,,
+q06,demo-model (synthetic),synthetic,correct,1.0,,
+q07,demo-model (synthetic),synthetic,distractor,0.0,mentions_distractor:1200,
+q08,demo-model (synthetic),synthetic,correct,1.0,,
+q09,demo-model (synthetic),synthetic,no_answer,0.0,abstained,
+q10,demo-model (synthetic),synthetic,correct,1.0,,
+q11,demo-model (synthetic),synthetic,correct,1.0,,
+q12,demo-model (synthetic),synthetic,distractor,0.0,mentions_distractor:Glasgow,
