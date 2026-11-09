@@ -13,6 +13,7 @@ Labels, checked in this order:
 
 import re
 import unicodedata
+from typing import Any
 
 LABEL_POINTS = {"correct": 1.0, "partial": 0.5, "no_answer": 0.0, "distractor": 0.0, "wrong": 0.0}
 
@@ -39,7 +40,7 @@ ABSTAIN_PATTERNS = [
 ]
 
 
-def normalise(text):
+def normalise(text: str) -> str:
     """Lower-case, fold accents, turn '&' into 'and' and strip punctuation."""
     text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode()
     text = text.lower().replace("&", " and ")
@@ -47,7 +48,7 @@ def normalise(text):
     return re.sub(r"\s+", " ", text).strip()
 
 
-def extract_dates(text):
+def extract_dates(text: str) -> set[tuple[int, int, int]]:
     """Return a set of (year, month, day) tuples found in the text.
 
     Handles '2 June 1943', 'June 2, 1943', '2nd June 1943' and '1943-06-02'.
@@ -67,7 +68,7 @@ def extract_dates(text):
     return found
 
 
-def extract_numbers(text):
+def extract_numbers(text: str) -> set[float]:
     """Return every number in the text as a float ('3,300' -> 3300.0)."""
     numbers = set()
     for raw in re.findall(r"(?<![\w.])\d[\d,]*(?:\.\d+)?", text):
@@ -79,12 +80,12 @@ def extract_numbers(text):
     return numbers
 
 
-def _parse_golden_date(value):
+def _parse_golden_date(value: str) -> tuple[int, int, int] | None:
     dates = extract_dates(value)
     return next(iter(dates)) if dates else None
 
 
-def matches(response, target):
+def matches(response: str, target: str) -> bool:
     """True if `target` (a date, number or phrase) appears in `response`."""
     target_date = _parse_golden_date(target)
     if target_date:
@@ -95,12 +96,12 @@ def matches(response, target):
     return normalise(target) in normalise(response)
 
 
-def abstained(response):
+def abstained(response: str) -> bool:
     lowered = response.lower()
     return any(re.search(pattern, lowered) for pattern in ABSTAIN_PATTERNS)
 
 
-def score_response(question, response):
+def score_response(question: dict[str, Any], response: str) -> dict[str, Any]:
     """Score one response. Returns {'label', 'points', 'flags'}."""
     golden = [question["answer"], *question.get("accept", [])]
     distractors = question.get("distractors", [])
@@ -125,6 +126,6 @@ def score_response(question, response):
     return {"label": label, "points": LABEL_POINTS[label], "flags": flags}
 
 
-def _year_only(golden_answer, response):
+def _year_only(golden_answer: str, response: str) -> bool:
     golden_date = _parse_golden_date(golden_answer)
-    return bool(golden_date) and float(golden_date[0]) in extract_numbers(response)
+    return golden_date is not None and float(golden_date[0]) in extract_numbers(response)

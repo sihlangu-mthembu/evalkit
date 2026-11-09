@@ -16,6 +16,7 @@ import os
 import pathlib
 import sys
 import urllib.request
+from typing import Any
 
 from score import score_response
 
@@ -24,12 +25,12 @@ DEFAULT_RESPONSES = [ROOT / "responses" / "observed_2026-10.jsonl", ROOT / "resp
 LABELS = ["correct", "partial", "distractor", "no_answer", "wrong"]
 
 
-def load_jsonl(path):
+def load_jsonl(path: pathlib.Path) -> list[dict[str, Any]]:
     with open(path, encoding="utf-8") as fh:
         return [json.loads(line) for line in fh if line.strip()]
 
 
-def ask_anthropic(question, model):
+def ask_anthropic(question: str, model: str) -> str:
     """Send one question to the Anthropic Messages API using only the standard library."""
     api_key = os.environ.get("ANTHROPIC_API_KEY")
     if not api_key:
@@ -49,7 +50,7 @@ def ask_anthropic(question, model):
     return "".join(block.get("text", "") for block in data.get("content", []))
 
 
-def run_live(questions, model):
+def run_live(questions: list[dict[str, Any]], model: str) -> list[dict[str, Any]]:
     today = datetime.date.today().isoformat()
     rows = []
     for q in questions:
@@ -64,16 +65,17 @@ def run_live(questions, model):
     return rows
 
 
-def model_name(row):
+def model_name(row: dict[str, Any]) -> str:
     return row["model"]
 
 
-def excerpt(text, limit=220):
+def excerpt(text: str, limit: int = 220) -> str:
     text = " ".join(text.split())
     return text if len(text) <= limit else text[:limit].rstrip() + "..."
 
 
-def build_report(questions, results, response_files):
+def build_report(questions: list[dict[str, Any]], results: list[dict[str, Any]],
+                 response_files: list[pathlib.Path]) -> str:
     by_id = {q["id"]: q for q in questions}
     models = sorted({r["model"] for r in results})
     lines = [
@@ -128,7 +130,7 @@ def build_report(questions, results, response_files):
     return "\n".join(lines)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--questions", default=ROOT / "data" / "questions.jsonl")
     parser.add_argument("--responses", action="append", help="responses JSONL file (repeatable)")
