@@ -1,5 +1,7 @@
 # evalkit
 
+![tests](https://github.com/sihlangu-mthembu/evalkit/actions/workflows/tests.yml/badge.svg)
+
 A small Python harness for evaluating how well large language models answer **hard, source-verified research questions**, and for explaining *how* they fail when they get them wrong.
 
 I built it while writing open-web research tasks designed to trip up frontier AI models. Each question has a single defensible answer, backed by exact quotes from at least one public source, plus a list of known "distractors": plausible wrong answers a model is likely to give.
